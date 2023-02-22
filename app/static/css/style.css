@@ -1,0 +1,117 @@
+body {
+  display: flex;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.logo {
+    text-decoration: none;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.wrapper {
+    width: 960px;
+    margin: 0 auto;
+}
+
+.content {
+    padding: 10px;
+}
+
+.edit-contest, .del-contest {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+.edit-contest {
+    background: url('../img/edit_contest.png') no-repeat 50%;
+    background-size: 100%;
+}
+
+.del-contest {
+    background: url('../img/del_contest.png') no-repeat 50%;
+    background-size: 100%;
+}
+
+.list-stage {
+    margin: 0;
+}
+
+.edit-stage, .del-stage {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.edit-stage {
+    background: url('../img/edit_stage.png') no-repeat 50%;
+    background-size: 100%;
+}
+
+.del-stage {
+    background: url('../img/del_stage.png') no-repeat 50%;
+    background-size: 100%;
+}
+
+.add-stage {
+    display: block;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background: url('../img/add_stage.png') no-repeat 50%;
+    background-size: 100%;
+    margin-left: 10px;
+}
+
+.done-stage, .cancel-stage {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-left: 5px;
+    border: none;
+    flex-shrink: 0;
+}
+
+.done-stage {
+    background: url('../img/done_stage.png') no-repeat 50%;
+    background-size: 100%;
+}
+
+.cancel-stage {
+    background: url('../img/cancel_stage.png') no-repeat 50%;
+    background-size: 100%;
+}

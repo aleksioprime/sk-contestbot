@@ -1,0 +1,55 @@
+{% extends 'index.html' %}
+ 
+{% block content %}
+<h2>{{title}}</h2>
+<form method="post" >
+  {{ form.csrf_token() }}
+  <div class="my-2">
+    {{ form.title.label }}
+    {{ form.title(class="form-control") }}
+  </div>
+  <div class="my-2">
+    {{ form.description.label }}
+    {{ form.description(class="form-control") }}
+  </div>
+  <div class="my-2">
+    {{ form.link.label }}
+    {{ form.link(class="form-control") }}
+  </div>
+  <div class="row">
+    <div class="col-md">
+      {{ form.level.label }}
+      {{ form.level(class="form-select") }}
+    </div>
+    <div class="col-md">
+      {{ form.type.label }}
+      {{ form.type(class="form-select") }}
+    </div>
+    <div class="col-md">
+      {{ form.grade.label }}
+      {{ form.grade(class="form-control") }}
+    </div>
+    <div class="col-md-4">
+      {{ form.group.label }}
+      {{ form.group(class="form-select") }}
+    </div>
+    <div class="col-md">
+      {{ form.year.label }}
+      {{ form.year(class="form-select") }}
+    </div>
+  </div>
+  <div class="my-2">Выберите предметы</div>
+  <div class="my-2 d-flex">
+    {% for sb in form.subjects %}
+      <div class="me-3">
+      {{ sb(class="form-check-input") }}
+      {{ sb.label(class="form-check-label") }}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="my-2 d-flex align-items-center">
+    {{ form.submit(class="btn btn-primary ms-auto me-3", label="{{ btn_submit }}" )}}
+    <a href={{ url_for('index') }}>Назад </a>
+  </div>
+</form>
+{% endblock %}
