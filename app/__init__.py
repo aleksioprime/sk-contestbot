@@ -6,9 +6,9 @@ from flask_bcrypt import Bcrypt
 
 import telebot
 
-token = "1504490782:AAE1_ttpgf_asklWrXxi3Gw3EaKnHlzdt88"
+token = os.getenv('TOKEN')
 bot = telebot.TeleBot(token)
-URL = "https://17df-185-107-243-81.eu.ngrok.io/"
+URL = os.getenv('URL')
 # ngrok http 5000
 from config import Config
 
