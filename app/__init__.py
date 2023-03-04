@@ -9,7 +9,6 @@ import telebot
 token = os.getenv('TOKEN')
 bot = telebot.TeleBot(token)
 URL = os.getenv('URL')
-# ngrok http 5000
 from config import Config
 
 
