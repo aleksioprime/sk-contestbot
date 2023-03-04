@@ -2,9 +2,9 @@
 FROM python:3.7.9
 # Устанавливаем необходимые переменные окружения
 ENV PYTHONUNBUFFERED 1
-ENV URL http://contestbot.aledev.ru/
-ENV TOKEN 5395574766:AAFbvibum0EMBf106oMaKIFOl2dc8fP1QtQ
-ENV PORT 5000
+# ENV URL http://contestbot.aledev.ru/
+# ENV TOKEN 5395574766:AAFbvibum0EMBf106oMaKIFOl2dc8fP1QtQ
+# ENV PORT 5000
 # Устанавливаем рабочий каталог контейнера 
 RUN mkdir /app
 WORKDIR /app
@@ -16,5 +16,5 @@ RUN pip install -r requirements.txt
 # Копируем все файлы из локального проекта в контейнер
 COPY ./ /app/
 # Выполнение стартовых команд
-ENTRYPOINT [ "python" ]
-CMD [ "app.py" ]
+# ENTRYPOINT [ "python" ]
+# CMD [ "app.py" ]
