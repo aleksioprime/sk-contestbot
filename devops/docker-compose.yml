@@ -3,9 +3,10 @@ services:
   backend:
     container_name: contestbot
     image: index.docker.io/aleksioprime/contestbot
-    command: python app.py
     networks:
       - main
+    ports:
+      - "5000:5000"
   watchtower:
     image: containrrr/watchtower
     volumes:
