@@ -1,0 +1,16 @@
+version: "3.6"
+services:
+  backend:
+    container_name: contestbot
+    image: index.docker.io/aleksioprime/contestbot
+    command: python app.py
+    networks:
+      - main
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30
+networks:
+  main:
+    driver: bridge

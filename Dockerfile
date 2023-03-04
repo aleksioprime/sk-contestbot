@@ -4,6 +4,7 @@ FROM python:3.7.9
 ENV PYTHONUNBUFFERED 1
 ENV URL https://contestbot.aledev.ru/
 ENV TOKEN 5395574766:AAFbvibum0EMBf106oMaKIFOl2dc8fP1QtQ
+ENV PORT 5000
 # Устанавливаем рабочий каталог контейнера 
 RUN mkdir /app
 WORKDIR /app
