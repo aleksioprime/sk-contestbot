@@ -1,6 +1,6 @@
 version: "3.6"
 services:
-  backend:
+  contestbot:
     container_name: contestbot
     image: index.docker.io/aleksioprime/contestbot
     command: python app.py
