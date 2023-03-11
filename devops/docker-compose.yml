@@ -7,7 +7,7 @@ services:
     environment:
       - URL=https://contestbot.aledev.ru/
       - TOKEN=5395574766:AAFbvibum0EMBf106oMaKIFOl2dc8fP1QtQ
-      - HOST=0.0.0.0
+      - HOST=localhost
       - PORT=5000
     networks:
       - main
