@@ -4,6 +4,10 @@ contest_subject = db.Table('contest_subject',
                            db.Column('contest_id', db.Integer, db.ForeignKey('contest.id')),
                            db.Column('subject_id', db.Integer, db.ForeignKey('subject.id')))
 
+contest_users = db.Table('contest_users',
+                           db.Column('contest_id', db.Integer, db.ForeignKey('contest.id')),
+                           db.Column('users_id', db.Integer, db.ForeignKey('user_tg.id')))
+
 class User(db.Model):
     __tablename__ = 'user'
     username = db.Column(db.String, primary_key=True)
@@ -22,6 +26,7 @@ class UserTg(db.Model):
     user_id = db.Column(db.String(64))
     username = db.Column(db.String(64))
     grade = db.Column(db.Integer)
+    contests = db.relationship('Contest', secondary=contest_users, backref='user')
 
 class Contest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
