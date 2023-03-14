@@ -32,10 +32,19 @@ def handler(message):
         with app.app_context():
             user = UserTg.query.filter_by(user_id = message.from_user.id).first()
             contests = [x for x in user.contests]
-        if len(contests):
-            str_contests = "\n".join([x.title for x in contests])
+        page = 1
+        count = len(contests)
+        if count:
+            markup = InlineKeyboardMarkup()
+            markup.add(InlineKeyboardButton(text='Удалить', callback_data='del__' + str(contests[0].id)))
+            markup.add(InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '),
+                       InlineKeyboardButton(text=f'Вперёд --->', callback_data='{"method":"PagMy","NumberPage":' + str(page + 1) + ',"CountPage":' + str(count) + ',"User":' + str(user.id) + '}'))
             bot.send_message(message.chat.id, f'Мои олимпиады\n\n'
-                                              f'<b>{str_contests}</b>', parse_mode="HTML")
+                                              f'<b>{contests[0].title}</b>',
+                                              parse_mode="HTML", reply_markup = markup)
+        else:
+            bot.send_message(message.chat.id, f'Мои олимпиады"\n\n'
+                                              f'<b>Вы пока не добавили себе олимпиад!</b>', parse_mode="HTML")
     else:
         bot.send_message(message.chat.id, "Неизвестная команда")
 
@@ -56,11 +65,12 @@ def callback_inline(call):
                     contests = Contest.query.filter_by(group_id=group.id).all()
                 page = 1
                 count = len(contests)
+                print(contests, page, count)
                 if count:
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton(text='Добавить', callback_data='add__' + str(contests[0].id)))
                     markup.add(InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '),
-                                InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"pagination\",\"NumberPage\":" + str(page+1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"))
+                               InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"PagDep\",\"NumberPage\":" + str(page + 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"))
                     bot.send_message(call.message.chat.id, f'Просмотр олимпиад кафедры "{group.title}"\n\n'
                                                            f'<b>{contests[0].title}</b>\n'
                                                            f'<b>Описание:</b> <i>{contests[0].description}</i>\n'
@@ -68,7 +78,7 @@ def callback_inline(call):
                 else:
                     bot.send_message(call.message.chat.id, f'Просмотр олимпиад кафедры "{group.title}"\n\n'
                                                            f'<b>Олимпиад в этой категории пока нет!</b>', parse_mode="HTML")
-            elif "pagination" in call.data:
+            elif "PagDep" in call.data:
                 json_string = json.loads(call.data)
                 count = json_string['CountPage']
                 page = json_string['NumberPage']
@@ -80,18 +90,41 @@ def callback_inline(call):
                 markup.add(InlineKeyboardButton(text='Добавить', callback_data='add__' + str(contests[page - 1].id)))
                 if page == 1:
                     markup.add(InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '),
-                               InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"pagination\",\"NumberPage\":" + str(page + 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"))
+                               InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"PagDep\",\"NumberPage\":" + str(page + 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"))
                 elif page == count:
-                    markup.add(InlineKeyboardButton(text=f'<--- Назад', callback_data="{\"method\":\"pagination\",\"NumberPage\":" + str(page - 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"),
+                    markup.add(InlineKeyboardButton(text=f'<--- Назад', callback_data="{\"method\":\"PagDep\",\"NumberPage\":" + str(page - 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"),
                                InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '))
                 else:
-                    markup.add(InlineKeyboardButton(text=f'<--- Назад', callback_data="{\"method\":\"pagination\",\"NumberPage\":" + str(page - 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"),
+                    markup.add(InlineKeyboardButton(text=f'<--- Назад', callback_data="{\"method\":\"PagDep\",\"NumberPage\":" + str(page - 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"),
                                InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '),
-                               InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"pagination\",\"NumberPage\":" + str(page + 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"))
+                               InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"PagDep\",\"NumberPage\":" + str(page + 1) + ",\"CountPage\":" + str(count) + ",\"Group\":" + str(group.id) + "}"))
                 bot.edit_message_text(f'Просмотр олимпиад кафедры "{group.title}"\n\n'
                                       f'<b>{contests[page - 1].title}</b>\n'
                                       f'<b>Описание:</b> <i>{contests[page - 1].description}</i>\n'
                                       f'<b>Ссылка:</b> <i>{contests[page - 1].link}</i>\n',
+                                      parse_mode="HTML",reply_markup = markup, chat_id=call.message.chat.id, message_id=call.message.message_id)
+            elif "PagMy" in call.data:
+                json_string = json.loads(call.data)
+                count = json_string['CountPage']
+                page = json_string['NumberPage']
+                user_id = json_string['User']
+                with app.app_context():
+                    user = UserTg.query.filter_by(user_id = user_id).first()
+                    contests = [x for x in user.contests]
+                markup = InlineKeyboardMarkup()
+                markup.add(InlineKeyboardButton(text='Удалить', callback_data='del__' + str(contests[page - 1].id)))
+                if page == 1:
+                    markup.add(InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '),
+                               InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"PagMy\",\"NumberPage\":" + str(page + 1) + ",\"CountPage\":" + str(count) + ",\"User\":" + str(user_id) + "}"))
+                elif page == count:
+                    markup.add(InlineKeyboardButton(text=f'<--- Назад', callback_data="{\"method\":\"PagMy\",\"NumberPage\":" + str(page - 1) + ",\"CountPage\":" + str(count) + str(user_id) + ",\"User\":" + str(user_id) +"}"),
+                               InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '))
+                else:
+                    markup.add(InlineKeyboardButton(text=f'<--- Назад', callback_data="{\"method\":\"PagMy\",\"NumberPage\":" + str(page - 1) + ",\"CountPage\":" + str(count) + str(user_id) + ",\"User\":" + str(user_id) + "}"),
+                               InlineKeyboardButton(text=f'{page}/{count}', callback_data=f' '),
+                               InlineKeyboardButton(text=f'Вперёд --->', callback_data="{\"method\":\"PagMy\",\"NumberPage\":" + str(page + 1) + ",\"CountPage\":" + str(count) + str(user_id) + ",\"User\":" + str(user_id) + "}"))
+                bot.edit_message_text(f'Мои олимпиады\n\n'
+                                      f'<b>{contests[0].title}</b>',
                                       parse_mode="HTML",reply_markup = markup, chat_id=call.message.chat.id, message_id=call.message.message_id)
             elif call.data.split('__')[0] == "add":
                 with app.app_context():
@@ -101,6 +134,14 @@ def callback_inline(call):
                     db.session.add(user_tg)
                     db.session.commit()
                 bot.send_message(call.message.chat.id, "Конкурс успешно добавлен!", reply_markup=main_menu)
+            elif call.data.split('__')[0] == "del":
+                with app.app_context():
+                    user_tg = UserTg.query.filter_by(user_id=call.from_user.id).first()
+                    contest = Contest.query.filter_by(id=call.data.split('__')[1]).first()
+                    user_tg.contests.remove(contest)
+                    db.session.add(user_tg)
+                    db.session.commit()
+                bot.send_message(call.message.chat.id, "Конкурс успешно удален!", reply_markup=main_menu)
     except Exception as e:
         print(repr(e))
 

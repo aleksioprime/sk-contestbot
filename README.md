@@ -7,11 +7,13 @@
 Открыть терминал и выполнить команду:
 ```
 devops\ngrok http 5000
+ngrok http 5000
 ```
 
-Скопировать адрес Forwarding в файл devops/contestbot_runlocal.bat в переменную URL
+Скопировать адрес Forwarding в файл devops/run_contestbot_win.bat в переменную URL
 
 Открыть другой терминал и запустить данный bat-файл:
 ```
-devops\contestbot_runlocal.bat
+devops\run_contestbot_win.bat
+source devops/run_contestbot_mac.command
 ```
