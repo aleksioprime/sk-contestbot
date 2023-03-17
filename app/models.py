@@ -38,7 +38,7 @@ class Contest(db.Model):
     grade = db.Column(db.String(12))
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     year_id = db.Column(db.Integer, db.ForeignKey('year.id'))
-    stages = db.relationship('Stage', backref='contest')
+    stages = db.relationship('Stage', backref='contest', order_by="Stage.deadline")
     subjects = db.relationship('Subject', secondary=contest_subject, backref='contest')
 
 class Stage(db.Model):
